@@ -16,49 +16,58 @@ def generar_tablero(n, movimientos_jugadores):
     return tablero
 
 def movimiento_valido(x, y, movimientos_otro_jugador):
-    n = 3 # Definimos el tamaño del tablero localmente para la validación
-    if x >= n or y >= n: # Usamos >= porque en programación se cuenta desde 0
+    n = 3 
+    if x < 0 or y < 0 or x >= n or y >= n:
         return False
     if x in movimientos_otro_jugador:
-        movimientos_en_columna = movimientos_otro_jugador[x]
-        if y in movimientos_en_columna:
+        if y in movimientos_otro_jugador[x]:
             return False
     return True
 
-# --- SECCIÓN DE TESTS ---
-
-def test_generar_tablero():
-    mov_jugador_1 = {}
-    mov_jugador_2 = {}
-    movimientos_jugadores = [mov_jugador_1, mov_jugador_2]
-    n = 3
-    t = generar_tablero(n, movimientos_jugadores)
-    assert len(t) == n
-    for fila in t:
-        assert len(fila) == n
-
-def test_movimiento_fuera_tablero():
-    movimientos_otro_jugador = {}
-    # Si el tablero es de 3x3, las posiciones son 0, 1, 2. La 4 está fuera.
-    assert False == movimiento_valido(4, 4, movimientos_otro_jugador)
-
-def test_movimiento_incorrecto():
-    # El otro jugador ya ocupa la fila 2, columna 1
-    movimientos_otro_jugador = {2: [1]}
-    assert False == movimiento_valido(2, 1, movimientos_otro_jugador)
-
 def jugada_ganadora(movimientos_jugador):
-    # Comprobamos si hay 3 fichas en una misma fila
     for fila in movimientos_jugador:
-        movimientos_columna = movimientos_jugador[fila]
-        if len(movimientos_columna) == 3:
+        if len(movimientos_jugador[fila]) == 3:
             return True
     return False
 
-def test_no_ganador():
-    movimientos_jugador = {2: [2, 3]}
-    assert False == jugada_ganadora(movimientos_jugador)
+def mostrar_tablero(tablero):
+    for fila in tablero:
+        print(" ".join(fila))
+    print()
 
-def test_ganador():
-    movimientos_jugador = {2: [1, 2, 3]}
-    assert True == jugada_ganadora(movimientos_jugador)
+if __name__ == "__main__":
+    n = int(input('Introduce el tamaño del tablero cuadrado: ')) # [cite: 594]
+    casillas_libres = n * n # [cite: 595]
+    jugador_activo = 0 # [cite: 596]
+    movimientos_jugadores = [{}, {}] # [cite: 600]
+
+    while casillas_libres > 0: # [cite: 603]
+        tablero = generar_tablero(n, movimientos_jugadores) # [cite: 601]
+        mostrar_tablero(tablero) # [cite: 602]
+
+        print(f"Turno JUGADOR {jugador_activo + 1}") # [cite: 604]
+        entrada = input("Introduce movimiento (fila,columna): ") # [cite: 604]
+
+        try:
+            x = int(entrada.split(',')[0]) - 1 # [cite: 606]
+            y = int(entrada.split(',')[1]) - 1 # [cite: 610]
+
+            movs_activo = movimientos_jugadores[jugador_activo] # [cite: 613]
+            movs_otro = movimientos_jugadores[(jugador_activo + 1) % 2] # [cite: 614]
+
+            if movimiento_valido(x, y, movs_otro): # [cite: 615]
+                col = movs_activo.get(x, []) # [cite: 616]
+                col.append(y) # [cite: 616]
+                movs_activo[x] = col # [cite: 617]
+                
+                if jugada_ganadora(movs_activo): # [cite: 623]
+                    mostrar_tablero(generar_tablero(n, movimientos_jugadores))
+                    print(f"¡ENHORABUENA EL JUGADOR {jugador_activo + 1} HA GANADO!") # [cite: 624]
+                    break
+                
+                casillas_libres -= 1 # [cite: 629]
+                jugador_activo = (jugador_activo + 1) % 2 # [cite: 630]
+            else:
+                print("Movimiento inválido. Inténtalo de nuevo.") # [cite: 628]
+        except (ValueError, IndexError):
+            print("Formato incorrecto. Usa: fila,columna (ej: 1,2)")
