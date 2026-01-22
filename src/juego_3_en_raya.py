@@ -25,9 +25,36 @@ def movimiento_valido(x, y, movimientos_otro_jugador):
     return True
 
 def jugada_ganadora(movimientos_jugador):
+    # 1. Comprobamos filas (Ya lo tenías)
     for fila in movimientos_jugador:
         if len(movimientos_jugador[fila]) == 3:
             return True
+
+    # 2. Comprobamos columnas
+    # Creamos un diccionario para contar cuántas fichas hay en cada columna
+    conteo_columnas = {}
+    for fila in movimientos_jugador:
+        for col in movimientos_jugador[fila]:
+            conteo_columnas[col] = conteo_columnas.get(col, 0) + 1
+            if conteo_columnas[col] == 3:
+                return True
+
+    # 3. Comprobamos diagonales (para un tablero de 3x3)
+    # Diagonal principal: (0,0), (1,1), (2,2)
+    diagonal_1 = 0
+    # Diagonal secundaria: (0,2), (1,1), (2,0)
+    diagonal_2 = 0
+    
+    for fila in movimientos_jugador:
+        for col in movimientos_jugador[fila]:
+            if fila == col:
+                diagonal_1 += 1
+            if fila + col == 2:
+                diagonal_2 += 1
+                
+    if diagonal_1 == 3 or diagonal_2 == 3:
+        return True
+
     return False
 
 def mostrar_tablero(tablero):
@@ -35,6 +62,16 @@ def mostrar_tablero(tablero):
         print(" ".join(fila))
     print()
 
+def test_ganador_columna():
+    # Jugador tiene fichas en (0,1), (1,1), (2,1)
+    movimientos = {0: [1], 1: [1], 2: [1]}
+    assert jugada_ganadora(movimientos) == True
+
+def test_ganador_diagonal():
+    # Jugador tiene fichas en (0,0), (1,1), (2,2)
+    movimientos = {0: [0], 1: [1], 2: [2]}
+    assert jugada_ganadora(movimientos) == True
+    
 if __name__ == "__main__":
     n = int(input('Introduce el tamaño del tablero cuadrado: ')) # [cite: 594]
     casillas_libres = n * n # [cite: 595]
