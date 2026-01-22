@@ -16,7 +16,7 @@ def generar_tablero(n, movimientos_jugadores):
     return tablero
 
 def movimiento_valido(x, y, movimientos_otro_jugador):
-    n = 3 # Definimos el tamaño del tablero localmente para la validación
+    n = 5 # Definimos el tamaño del tablero localmente para la validación
     if x >= n or y >= n: # Usamos >= porque en programación se cuenta desde 0
         return False
     if x in movimientos_otro_jugador:
@@ -48,11 +48,12 @@ def test_movimiento_incorrecto():
     assert False == movimiento_valido(2, 1, movimientos_otro_jugador)
 
 def jugada_ganadora(movimientos_jugador):
-    # Comprobamos si hay 3 fichas en una misma fila
+    # Ahora comprobamos si hay 4 fichas en una fila
     for fila in movimientos_jugador:
-        movimientos_columna = movimientos_jugador[fila]
-        if len(movimientos_columna) == 3:
+        if len(movimientos_jugador[fila]) == 4: # Cambiado de 3 a 4
             return True
+    
+    # (Añade aquí también la lógica de 4 para columnas y diagonales)
     return False
 
 def test_no_ganador():
