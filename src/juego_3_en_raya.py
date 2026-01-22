@@ -46,3 +46,19 @@ def test_movimiento_incorrecto():
     # El otro jugador ya ocupa la fila 2, columna 1
     movimientos_otro_jugador = {2: [1]}
     assert False == movimiento_valido(2, 1, movimientos_otro_jugador)
+
+def jugada_ganadora(movimientos_jugador):
+    # Comprobamos si hay 3 fichas en una misma fila
+    for fila in movimientos_jugador:
+        movimientos_columna = movimientos_jugador[fila]
+        if len(movimientos_columna) == 3:
+            return True
+    return False
+
+def test_no_ganador():
+    movimientos_jugador = {2: [2, 3]}
+    assert False == jugada_ganadora(movimientos_jugador)
+
+def test_ganador():
+    movimientos_jugador = {2: [1, 2, 3]}
+    assert True == jugada_ganadora(movimientos_jugador)
