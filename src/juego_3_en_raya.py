@@ -25,13 +25,12 @@ def movimiento_valido(x, y, movimientos_otro_jugador):
     return True
 
 def jugada_ganadora(movimientos_jugador):
-    # 1. Comprobamos filas (Ya lo tenías)
+    # 1. Comprobamos filas
     for fila in movimientos_jugador:
         if len(movimientos_jugador[fila]) == 3:
             return True
 
     # 2. Comprobamos columnas
-    # Creamos un diccionario para contar cuántas fichas hay en cada columna
     conteo_columnas = {}
     for fila in movimientos_jugador:
         for col in movimientos_jugador[fila]:
@@ -39,20 +38,17 @@ def jugada_ganadora(movimientos_jugador):
             if conteo_columnas[col] == 3:
                 return True
 
-    # 3. Comprobamos diagonales (para un tablero de 3x3)
-    # Diagonal principal: (0,0), (1,1), (2,2)
-    diagonal_1 = 0
-    # Diagonal secundaria: (0,2), (1,1), (2,0)
-    diagonal_2 = 0
-    
+    # 3. Comprobamos diagonales (para tablero 3x3)
+    diag_principal = 0
+    diag_secundaria = 0
     for fila in movimientos_jugador:
         for col in movimientos_jugador[fila]:
             if fila == col:
-                diagonal_1 += 1
+                diag_principal += 1
             if fila + col == 2:
-                diagonal_2 += 1
+                diag_secundaria += 1
                 
-    if diagonal_1 == 3 or diagonal_2 == 3:
+    if diag_principal == 3 or diag_secundaria == 3:
         return True
 
     return False
@@ -63,14 +59,14 @@ def mostrar_tablero(tablero):
     print()
 
 def test_ganador_columna():
-    # Jugador tiene fichas en (0,1), (1,1), (2,1)
-    movimientos = {0: [1], 1: [1], 2: [1]}
-    assert jugada_ganadora(movimientos) == True
+    # Fichas en (0,0), (1,0), (2,0)
+    movs = {0: [0], 1: [0], 2: [0]}
+    assert jugada_ganadora(movs) is True
 
 def test_ganador_diagonal():
-    # Jugador tiene fichas en (0,0), (1,1), (2,2)
-    movimientos = {0: [0], 1: [1], 2: [2]}
-    assert jugada_ganadora(movimientos) == True
+    # Fichas en (0,0), (1,1), (2,2)
+    movs = {0: [0], 1: [1], 2: [2]}
+    assert jugada_ganadora(movs) is True
     
 if __name__ == "__main__":
     n = int(input('Introduce el tamaño del tablero cuadrado: ')) # [cite: 594]
